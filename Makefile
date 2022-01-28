@@ -1,5 +1,6 @@
 
 # install gofumpt: go install mvdan.cc/gofumpt@latest
+GIT_VERSION?=$(shell git describe --always --tags)
 
 gofmt:
 	@GO111MODULE=off gofumpt -w -l $(shell find . -type f -name '*.go'| grep -v "/vendor/\|/.git/\|/git/\|.*_y.go")
@@ -12,10 +13,14 @@ define build
 endef
 
 pub_image:
+	@echo $(GIT_VERSION)
 	@docker buildx build --platform linux/amd64 \
-    		-t dokcerhub.com/buleleaf/shortUrl:$(GIT_VERSION) . --push
+    		-t pubrepo.jiagouyun.com/googleimages/shorturl:$(GIT_VERSION) . --push
 
 local: gofmt test
 	$(call build)
+
+push: pub_image
+
 
 
